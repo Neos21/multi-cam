@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		B58E615D233B4AE300514B4D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58E615C233B4AE300514B4D /* AppDelegate.swift */; };
-		B58E615F233B4AE300514B4D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58E615E233B4AE300514B4D /* SceneDelegate.swift */; };
 		B58E6161233B4AE300514B4D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58E6160233B4AE300514B4D /* ViewController.swift */; };
 		B58E6164233B4AE300514B4D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B58E6162233B4AE300514B4D /* Main.storyboard */; };
 		B58E6166233B4AE400514B4D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B58E6165233B4AE400514B4D /* Assets.xcassets */; };
@@ -18,7 +17,6 @@
 /* Begin PBXFileReference section */
 		B58E6159233B4AE300514B4D /* MultiCam.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MultiCam.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B58E615C233B4AE300514B4D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B58E615E233B4AE300514B4D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		B58E6160233B4AE300514B4D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		B58E6163233B4AE300514B4D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B58E6165233B4AE400514B4D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -57,7 +55,6 @@
 			isa = PBXGroup;
 			children = (
 				B58E615C233B4AE300514B4D /* AppDelegate.swift */,
-				B58E615E233B4AE300514B4D /* SceneDelegate.swift */,
 				B58E6160233B4AE300514B4D /* ViewController.swift */,
 				B58E6162233B4AE300514B4D /* Main.storyboard */,
 				B58E6165233B4AE400514B4D /* Assets.xcassets */,
@@ -140,7 +137,6 @@
 			files = (
 				B58E6161233B4AE300514B4D /* ViewController.swift in Sources */,
 				B58E615D233B4AE300514B4D /* AppDelegate.swift in Sources */,
-				B58E615F233B4AE300514B4D /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,7 +290,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = neos21.MultiCam;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -312,7 +308,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = neos21.MultiCam;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

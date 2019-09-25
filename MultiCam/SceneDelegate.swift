@@ -51,3 +51,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 }
 
+// SceneDelegate によって1つのアプリに対して複数の UI のインスタンスを作れるようになる
