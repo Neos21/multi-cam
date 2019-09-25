@@ -16,12 +16,12 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EbX-SD-VTa">
-                                <rect key="frame" x="0.0" y="44" width="207" height="400"/>
+                                <rect key="frame" x="0.0" y="30" width="207" height="390"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemTealColor" red="0.35294117647058826" green="0.78431372549019607" blue="0.98039215686274506" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="INp-do-Qyg">
-                                <rect key="frame" x="20" y="800" width="374" height="62"/>
+                                <rect key="frame" x="20" y="810" width="374" height="52"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemYellowColor" red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="50"/>
@@ -31,15 +31,27 @@
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9Uq-0D-SSx">
-                                <rect key="frame" x="207" y="44" width="207" height="400"/>
+                                <rect key="frame" x="207" y="30" width="207" height="390"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemPinkColor" red="1" green="0.17647058823529413" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mgi-on-liC">
+                                <rect key="frame" x="0.0" y="420" width="207" height="390"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemGreenColor" red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="o7M-kq-Rwg">
+                                <rect key="frame" x="207" y="420" width="207" height="390"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemPurpleColor" red="0.68627450980392157" green="0.32156862745098042" blue="0.87058823529411766" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="frontUIView" destination="o7M-kq-Rwg" id="2m5-b4-494"/>
+                        <outlet property="telephotoUIView" destination="mgi-on-liC" id="crA-yi-e7L"/>
                         <outlet property="ultraWideUIView" destination="EbX-SD-VTa" id="OsL-cd-G2G"/>
                         <outlet property="wideAngleUIView" destination="9Uq-0D-SSx" id="xbV-VF-rXW"/>
                     </connections>
