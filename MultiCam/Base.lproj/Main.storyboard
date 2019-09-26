@@ -51,6 +51,7 @@
                     </view>
                     <connections>
                         <outlet property="frontUIView" destination="o7M-kq-Rwg" id="2m5-b4-494"/>
+                        <outlet property="recordButton" destination="INp-do-Qyg" id="gXa-sG-duu"/>
                         <outlet property="telephotoUIView" destination="mgi-on-liC" id="crA-yi-e7L"/>
                         <outlet property="ultraWideUIView" destination="EbX-SD-VTa" id="OsL-cd-G2G"/>
                         <outlet property="wideAngleUIView" destination="9Uq-0D-SSx" id="xbV-VF-rXW"/>
