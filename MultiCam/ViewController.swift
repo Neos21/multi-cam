@@ -13,7 +13,7 @@ import Photos
 
 class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
   // ====================================================================================================
-  // MARK: 変数定義 : セッション・デバイス
+  // MARK: - 変数定義 : セッション・デバイス
   // ====================================================================================================
   
   // セッション
@@ -37,8 +37,6 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
   var microphoneInput: AVCaptureDeviceInput!
   // マイク : Port
   var microphonePort: AVCaptureDeviceInput.Port!
-  // マイク : Output
-  var microphoneOutput: AVCaptureAudioDataOutput!
   
   // 超広角 : 左上
   @IBOutlet var ultraWideUIView: UIView!
@@ -58,6 +56,8 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
   var ultraWideAudioConnection: AVCaptureConnection!
   // 超広角 : レイヤー Connection
   var ultraWideLayerConnection: AVCaptureConnection!
+  // 超広角 : タスク ID
+  var ultraWideBackgroundTaskID : UIBackgroundTaskIdentifier?
   
   // 広角 : 右上
   @IBOutlet var wideAngleUIView: UIView!
@@ -77,6 +77,8 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
   var wideAngleAudioConnection: AVCaptureConnection!
   // 広角 : レイヤー Connection
   var wideAngleLayerConnection: AVCaptureConnection!
+  // 広角 : タスク ID
+  var wideAngleBackgroundTaskID : UIBackgroundTaskIdentifier?
   
   // 望遠 : 左下
   @IBOutlet var telephotoUIView: UIView!
@@ -96,6 +98,8 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
   var telephotoAudioConnection: AVCaptureConnection!
   // 望遠 : レイヤー Connection
   var telephotoLayerConnection: AVCaptureConnection!
+  // 超望遠 : タスク ID
+  var telephotoBackgroundTaskID : UIBackgroundTaskIdentifier?
   
   // フロント : 右下
   @IBOutlet var frontUIView: UIView!
@@ -115,16 +119,15 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
   var frontAudioConnection: AVCaptureConnection!
   // フロント : レイヤー Connection
   var frontLayerConnection: AVCaptureConnection!
+  // フロント : タスク ID
+  var frontBackgroundTaskID : UIBackgroundTaskIdentifier?
   
   
   
   
   // ====================================================================================================
-  // MARK: 変数定義 : 録画処理
+  // MARK: - 変数定義 : 録画処理
   // ====================================================================================================
-  
-  // バックグラウンド処理するタスクの ID を控えておく
-  var backgroundTaskID : UIBackgroundTaskIdentifier?
   
   // 録画中かどうか
   var isRecording: Bool = false
@@ -134,7 +137,7 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
   
   
   // ====================================================================================================
-  // MARK: 初期処理
+  // MARK: - 初期処理
   // ====================================================================================================
   
   // 初期表示時の処理
@@ -148,7 +151,7 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
       return
     }
     
-    // 同時に利用できる最大数を特定する
+    // 同時に利用できるデバイスの最大数を特定する
     self.maxDevicesCount = self.detectSupportedDeviceCount()
     // 使用するデバイスを選択する
     self.selectedDevices = self.selectDevices()
@@ -179,11 +182,11 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
   
   
   // ====================================================================================================
-  // MARK: デバイス上限特定
+  // MARK: - デバイス上限特定
   // ====================================================================================================
   
   // AVCaptureMultiCamSession に対応している Device の組合せを取得し、同時利用できるデバイス数の上限を取得する
-  // 4カメの組合せの Set がないので、4カメ同時には使えないっぽい…
+  // MARK: NOTE : iOS13.0・13.1 の iPhone 11 Pro Max で確認したところ、4カメの組合せの Set がないので、4カメ同時には使えないと思われる
   func detectSupportedDeviceCount() -> Int {
     let discoverySession = AVCaptureDevice.DiscoverySession.init(deviceTypes: [
       AVCaptureDevice.DeviceType.builtInWideAngleCamera,
@@ -209,6 +212,7 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
   }
   
   // 使用可能なデバイス数上限に合わせて使用するデバイスを選択する
+  // MARK: FIXME : 最後に選択した状態を保存し復元できるようにしたい
   func selectDevices() -> Set<Devices> {
     switch maxDevicesCount {
       case 0:
@@ -232,7 +236,7 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
   
   
   // ====================================================================================================
-  // MARK: セッション準備
+  // MARK: - セッション準備
   // ====================================================================================================
   
   // セッションを準備する
@@ -240,6 +244,7 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
     print("セッション準備開始")
     self.session.beginConfiguration()
     
+    // マイクデバイスは全てのカメラで共用する
     guard setupMicrophone() else {
       print("[マイク] 準備に失敗")
       return
@@ -313,15 +318,6 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
       return false
     }
     self.microphonePort = microphonePort
-    
-    // Output を Session に追加する
-    // MARK: TODO : 以下要らないかも
-    self.microphoneOutput = AVCaptureAudioDataOutput()
-    guard self.session.canAddOutput(self.microphoneOutput) else {
-      print("[マイク] Output を Session に追加できない")
-      return false
-    }
-    self.session.addOutputWithNoConnections(self.microphoneOutput)
     
     return true
   }
@@ -689,7 +685,7 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
   
   
   // ====================================================================================================
-  // MARK: UIView タップイベント
+  // MARK: - UIView タップイベント
   // ====================================================================================================
   
   // 超広角の UIView がタップされた時
@@ -715,7 +711,7 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
     
     print("[超広角] デバイスを追加する")
     self.stopSession()
-    self.selectedDevices.insert(Devices.wideAngle)
+    self.selectedDevices.insert(Devices.ultraWide)
     self.restartSession()
     print("[超広角] デバイス追加・再起動")
   }
@@ -827,8 +823,10 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
     self.setupSession()
   }
   
+  
+  
   // ====================================================================================================
-  // MARK: 録画・停止
+  // MARK: - 録画・停止
   // ====================================================================================================
   
   // ボタン押下時
@@ -850,27 +848,27 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
       self.recordButton.setTitle("Stop", for: .normal)
     }
     
-    // 録画終了処理をバックグラウンドで処理できるようにする
-    if UIDevice.current.isMultitaskingSupported {
-      self.backgroundTaskID = UIApplication.shared.beginBackgroundTask(expirationHandler: nil)
-    }
-    
     let paths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
     let documentsDirectory = paths[0] as String
     
+    // 録画終了処理をバックグラウンドで処理できるように TaskID を取得しておく
     if(self.selectedDevices.contains(Devices.ultraWide)) {
+      self.ultraWideBackgroundTaskID = UIApplication.shared.beginBackgroundTask(expirationHandler: nil)
       self.ultraWideOutput.startRecording(to: NSURL(fileURLWithPath: "\(documentsDirectory)/tempUltraWide.mp4") as URL, recordingDelegate: self)
       print("[超広角] 録画開始")
     }
     if(self.selectedDevices.contains(Devices.wideAngle)) {
+      self.wideAngleBackgroundTaskID = UIApplication.shared.beginBackgroundTask(expirationHandler: nil)
       self.wideAngleOutput.startRecording(to: NSURL(fileURLWithPath: "\(documentsDirectory)/tempWideAngle.mp4") as URL, recordingDelegate: self)
       print("[広角] 録画開始")
     }
     if(self.selectedDevices.contains(Devices.telephoto)) {
+      self.telephotoBackgroundTaskID = UIApplication.shared.beginBackgroundTask(expirationHandler: nil)
       self.telephotoOutput.startRecording(to: NSURL(fileURLWithPath: "\(documentsDirectory)/tempTelephoto.mp4") as URL, recordingDelegate: self)
       print("[望遠] 録画開始")
     }
     if(self.selectedDevices.contains(Devices.front)) {
+      self.frontBackgroundTaskID = UIApplication.shared.beginBackgroundTask(expirationHandler: nil)
       self.frontOutput.startRecording(to: NSURL(fileURLWithPath: "\(documentsDirectory)/tempFront.mp4") as URL, recordingDelegate: self)
       print("[フロント] 録画開始")
     }
@@ -881,15 +879,6 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
     defer {
       self.isRecording = false
       self.recordButton.setTitle("Start", for: .normal)
-      
-      // 代入 : Optional な値が nil でないかの確認
-      if let currentBackgroundTaskID = self.backgroundTaskID {
-        self.backgroundTaskID = UIBackgroundTaskIdentifier.invalid
-        if currentBackgroundTaskID != UIBackgroundTaskIdentifier.invalid {
-          print("バックグランド処理終了")
-          UIApplication.shared.endBackgroundTask(currentBackgroundTaskID)
-        }
-      }
     }
     
     if(self.selectedDevices.contains(Devices.ultraWide)) {
@@ -924,6 +913,35 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
           }
           else {
             print("保存失敗 : \(outputFileURL) : \(String(describing: error))")
+          }
+          
+          if let currentBackgroundTaskID = self.ultraWideBackgroundTaskID {
+            self.ultraWideBackgroundTaskID = UIBackgroundTaskIdentifier.invalid
+            if currentBackgroundTaskID != UIBackgroundTaskIdentifier.invalid {
+              print("[超広角] バックグランド処理終了")
+              UIApplication.shared.endBackgroundTask(currentBackgroundTaskID)
+            }
+          }
+          if let currentBackgroundTaskID = self.wideAngleBackgroundTaskID {
+            self.wideAngleBackgroundTaskID = UIBackgroundTaskIdentifier.invalid
+            if currentBackgroundTaskID != UIBackgroundTaskIdentifier.invalid {
+              print("[広角] バックグランド処理終了")
+              UIApplication.shared.endBackgroundTask(currentBackgroundTaskID)
+            }
+          }
+          if let currentBackgroundTaskID = self.telephotoBackgroundTaskID {
+            self.telephotoBackgroundTaskID = UIBackgroundTaskIdentifier.invalid
+            if currentBackgroundTaskID != UIBackgroundTaskIdentifier.invalid {
+              print("[望遠] バックグランド処理終了")
+              UIApplication.shared.endBackgroundTask(currentBackgroundTaskID)
+            }
+          }
+          if let currentBackgroundTaskID = self.frontBackgroundTaskID {
+            self.frontBackgroundTaskID = UIBackgroundTaskIdentifier.invalid
+            if currentBackgroundTaskID != UIBackgroundTaskIdentifier.invalid {
+              print("[フロント] バックグランド処理終了")
+              UIApplication.shared.endBackgroundTask(currentBackgroundTaskID)
+            }
           }
         }
       }
@@ -987,22 +1005,3 @@ class ViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
     }
   }
 }
-
-
-
-// - UIView と UIButton を配置
-// - Main.storyboard と ViewController.swift を横並びに配置し、Control を押しながら、UI 部品をコード行にドラッグする
-//   - http://neos21.hatenablog.com/entry/2018/06/03/080000
-// - 最初に参考にした単独プレビュー : http://developers.goalist.co.jp/entry/2017/01/19/171612
-// - AVCaptureMultiCamSession を使う時は手動で AVCaptureInputs から AVCaptureOutputs にコネクションを繋ぐ
-// - defer : この関数を抜ける時に必ず行う処理を定義しておく。finally 的な
-// - AVCaptureVideoPreviewLayer()
-//   - <AVCaptureConnection: 0x2810a64e0> cannot be added because AVCaptureVideoPreviewLayer only accepts one connection of this media type at a time, and it is already connected'
-//   - このエラーが出るので、宣言時に session を指定しない
-// - 3つまでは同時起動できるが、4つ目はどの組合せでも表示できない
-//   - Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: '*** -[AVCaptureMultiCamSession addInputWithNoConnections:] These devices may not be used simultaneously. Use -[AVCaptureDeviceDiscoverySession supportedMultiCamDeviceSets]'
-// - 録画中バックグラウンドに移ると以下のエラーが出る
-//   - Can't end BackgroundTask: no background task exists with identifier 1 (0x1), or it may have already been ended. Break in UIApplicationEndBackgroundTaskError() to debug.
-//   - 公式サンプル AVMultiCamPiP でも出てたので無視する
-// - 一度録画したりしたあとカメラをセッションから外そうとするとエラーが出る
-//   - *** Terminating app due to uncaught exception 'NSRangeException', reason: 'Cannot remove an observer <AVCaptureMultiCamSession 0x28084e7a0> for the key path "enabled" from <AVCaptureConnection 0x2808066c0> because it is not registered as an observer.'
