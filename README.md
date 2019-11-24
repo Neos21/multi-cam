@@ -1,5 +1,8 @@
 # Multi Cam
 
+![Example 1](https://user-images.githubusercontent.com/16625731/69497175-6b7c5500-0f1d-11ea-9331-e0bba1a0d952.png)  
+![Example 2](https://user-images.githubusercontent.com/16625731/69497170-5c95a280-0f1d-11ea-8e3c-9898f6723e47.png)
+
 iOS 13 から使えるようになった `AVCaptureMultiCamSession` を使って、複数カメラデバイスで同時にビデオ録画するアプリです。
 
 - 検証端末 : iPhone 11 Pro Max
